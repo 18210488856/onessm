@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!--引入外部文件-->
+    <context:property-placeholder location="classpath:jdbc.properties"></context:property-placeholder>
+
+
+    <!--创建驱动器   druid  阿里驱动器-->
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="driverClassName" value="${jdbc.driver}"></property>
+        <property name="url" value="${jdbc.url}"></property>
+        <property name="username" value="${jdbc.username}"></property>
+        <property name="password" value="${jdbc.password}"></property>
+
+    </bean>
+
+    <!--创建 SqlSessionFactoryBean  会话工厂对象   ,spring与mybatis整合-->
+    <bean id="factory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"></property>
+        <property name="configLocation" value="classpath:dao/mybatis-config.xml"></property>
+        <property name="typeAliasesPackage" value="pojo"></property>
+    </bean>
+
+    <!--mapper扫描 1.加载mapper.xml文件  2.创建接口的代理对象并放到spring容器中-->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="dao"></property>
+    </bean>
+</beans>
